@@ -1,8 +1,9 @@
 <template>
   <div class="login-container">
     <div>
-    <button class="btn btn-large btn-secondary">Login with GitHub</button>
-  </div>
+      <div>Log in with Github to manage reviews</div>
+      <a class="btn btn-large btn-secondary" href="/api/login/github">Login with GitHub</a>
+    </div>
   </div>
 </template>
 
@@ -11,6 +12,8 @@ export default {
   name: 'login',
   data () {
 
+  },
+  methods: {
   }
 }
 

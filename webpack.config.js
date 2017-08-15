@@ -44,8 +44,15 @@ module.exports = {
     }
   },
   devServer: {
+    publicPath: '/dist/',
     historyApiFallback: true,
-    noInfo: true
+    noInfo: true,
+    proxy: {
+        '/api/**' : {
+            target: 'http://localhost:3000',
+            secure: false
+        }
+    }
   },
   performance: {
     hints: false
