@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "devServer": "cross-env NODE_ENV=development webpack-dev-server --open --hot",
-    "apiServer": "node server.js",
+    "apiServer": "node server/server.js",
     "dev": "npm-run-all -p devServer apiServer",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules && npm run copyIndex",
     "copyIndex": "cp index.html dist/index.html",
