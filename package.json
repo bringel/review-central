@@ -10,7 +10,7 @@
     "dev": "npm-run-all -p devServer apiServer",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules && npm run copyIndex",
     "copyIndex": "cp index.html dist/index.html",
-    "start": "npm run build && node server.js"
+    "start": "npm run build && cross-env NODE_ENV=production node server.js"
   },
   "dependencies": {
     "dotenv": "^4.0.0",

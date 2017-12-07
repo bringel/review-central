@@ -1,8 +1,8 @@
 <template>
   <div class="login-container">
-    <div>
+    <div class="login-content">
       <div>Log in with Github to manage reviews</div>
-      <a class="btn btn-large btn-secondary" href="/api/login/github">Login with GitHub</a>
+      <a class="btn btn-large btn-success" href="/api/login/github">Login with GitHub</a>
     </div>
   </div>
 </template>
@@ -26,4 +26,11 @@ export default {
     justify-content: center;
     align-items: center;
   }
+
+  .login-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
 </style>
