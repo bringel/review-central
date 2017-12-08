@@ -1,5 +1,6 @@
 var path = require('path')
 var webpack = require('webpack')
+var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   entry: './app/main.js',
@@ -8,6 +9,11 @@ module.exports = {
     publicPath: '/dist/',
     filename: 'app.js'
   },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: 'app/index.html'
+    })
+  ],
   module: {
     rules: [
       {
