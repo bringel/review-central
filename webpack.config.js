@@ -6,12 +6,12 @@ module.exports = {
   entry: './app/main.js',
   output: {
     path: path.resolve(__dirname, './dist'),
-    publicPath: '/dist/',
+    publicPath: '/',
     filename: 'app.js'
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: 'app/index.html'
+      template: './app/index.html',
     })
   ],
   module: {
@@ -50,13 +50,17 @@ module.exports = {
     }
   },
   devServer: {
-    publicPath: '/dist/',
+    publicPath: '/',
     historyApiFallback: true,
     noInfo: true,
     proxy: {
         '/api/**' : {
             target: 'http://localhost:3000',
             secure: false
+        },
+        '/login/**': {
+          target: 'http://localhost:3000',
+          secure: false
         }
     }
   },

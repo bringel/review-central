@@ -1,7 +1,8 @@
 const express = require('express');
 const path = require('path');
 require('dotenv').config();
-const OAuth2 = require('oauth').OAuth2;
+
+const GithubAuthenticator = require('./github-authenticator');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -15,14 +16,18 @@ app.get('/login/github', function(req, res) {
 
 app.get('/login/github/callback', function(request, response) {
 
-  const code = request.query.code;
-  const oauthClient = new OAuth2(process.env.GITHUB_CLIENT_ID, process.env.GITHUB_CLIENT_SECRET, 'https://github.com', '/login/oauth/authorize', '/login/oauth/access_token');
+    const code = request.query.code;
+    if (!code || code === '') {
+      response.sendStatus(400);
+    }
+    const github = new GithubAuthenticator(process.env.GITHUB_CLIENT_ID, process.env.GITHUB_CLIENT_SECRET, callbackURL);
 
-  oauthClient.getOAuthAccessToken(code, {}, function (e, access_token, refresh_token, results){
-    console.log('bearer: ',access_token);
-    response.send(access_token);
-  });
-}
+    github.loginUser(code, function(token, userInfo) {
+      // TODO: save the user record to the database
+
+      response.redirect('/');
+    });
+  }
 );
 
 app.listen(port, function() {

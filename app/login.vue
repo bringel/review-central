@@ -2,7 +2,7 @@
   <div class="login-container">
     <div class="login-content">
       <div>Log in with Github to manage reviews</div>
-      <a class="btn btn-large btn-success" href="/api/login/github">Login with GitHub</a>
+      <a class="btn btn-large btn-success" href="/login/github">Login with GitHub</a>
     </div>
   </div>
 </template>
