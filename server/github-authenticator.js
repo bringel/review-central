@@ -1,6 +1,6 @@
-const OAuth2 = require('oauth').OAuth2;
+import { OAuth2 } from 'oauth'
 
-class GithubAuthenticator {
+export class GithubAuthenticator {
 
   constructor(clientID, clientSecret, callbackURL) {
     this.clientID = clientID;
@@ -18,5 +18,3 @@ class GithubAuthenticator {
     });
   }
 }
-
-module.exports = GithubAuthenticator;

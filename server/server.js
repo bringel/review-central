@@ -1,22 +1,16 @@
 import express from 'express';
-// const express = require('express');
 import path from 'path';
-// const path = require('path');
 import dotenv from 'dotenv';
-// require('dotenv').config();
 import bodyParser from 'body-parser';
-// const bodyParser = require('body-parser');
-// const cookieParser = require('cookie-parser');
 import cookieParser from 'cookie-parser';
 
-const GithubAuthenticator = require('./github-authenticator');
+import { GithubAuthenticator } from './github-authenticator';
 
 dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
 const callbackURL = 'http://127.0.0.1:3000/login/github/callback';
 
-console.log(__dirname);
 app.use(express.static(path.join(__dirname, '../../dist')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
