@@ -1,14 +1,26 @@
-const express = require('express');
-const path = require('path');
-require('dotenv').config();
+import express from 'express';
+// const express = require('express');
+import path from 'path';
+// const path = require('path');
+import dotenv from 'dotenv';
+// require('dotenv').config();
+import bodyParser from 'body-parser';
+// const bodyParser = require('body-parser');
+// const cookieParser = require('cookie-parser');
+import cookieParser from 'cookie-parser';
 
 const GithubAuthenticator = require('./github-authenticator');
 
+dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
 const callbackURL = 'http://127.0.0.1:3000/login/github/callback';
 
-app.use(express.static(path.join(__dirname, 'dist')));
+console.log(__dirname);
+app.use(express.static(path.join(__dirname, '../../dist')));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
 
 app.get('/login/github', function(req, res) {
   res.redirect(`https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&redirect_uri=${callbackURL}`);
