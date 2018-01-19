@@ -5,6 +5,7 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 
 import { GithubAuthenticator } from './github-authenticator';
+import { User } from './db/models';
 
 dotenv.config();
 const app = express();
@@ -30,12 +31,14 @@ app.get('/login/github/callback', function(request, response) {
 
     github.loginUser(code, function(token, userInfo) {
       // TODO: save the user record to the database
-
+      console.log(token);
+      console.log(userInfo);
       response.redirect('/');
     });
   }
 );
 
 app.listen(port, function() {
+  // eslint-disable-next-line
   console.log(`app listening on port ${port}`);
 });
