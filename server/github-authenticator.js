@@ -13,7 +13,7 @@ export class GithubAuthenticator {
 
     client.getOAuthAccessToken(code, {}, function(error, token, refreshToken, results) {
       client.get('https://api.github.com/user', token, function(error, result, response) {
-        callback(token, result);
+        callback(token, JSON.parse(result));
       })
     });
   }

@@ -31,12 +31,16 @@ app.get('/login/github/callback', function(request, response) {
 
     github.loginUser(code, function(token, userInfo) {
       // TODO: save the user record to the database
-      console.log(token);
-      console.log(userInfo);
-      response.redirect('/');
-    });
-  }
-);
+      User.findOrCreate({
+        where: { githubID: userInfo.id },
+        defaults: { githubID: userInfo.id, githubUsername: userInfo.login, githubName: userInfo.name, githubEmail: userInfo.email }})
+        .then(function([u, created]){
+          console.log(created);
+          response.redirect('/');
+        })
+      });
+    }
+  );
 
 app.listen(port, function() {
   // eslint-disable-next-line
