@@ -6,7 +6,7 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.BIGINT
       },
       githubUsername: {
         type: Sequelize.STRING
@@ -15,7 +15,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       githubID: {
-        type: Sequelize.INTEGER
+        type: Sequelize.BIGINT
       },
       githubEmail: {
         type: Sequelize.STRING

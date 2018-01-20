@@ -3,7 +3,7 @@ module.exports = (sequelize, DataTypes) => {
   var User = sequelize.define('User', {
     githubUsername: DataTypes.STRING,
     githubName: DataTypes.STRING,
-    githubID: DataTypes.INTEGER,
+    githubID: DataTypes.BIGINT,
     githubEmail: DataTypes.STRING
   }, {
     classMethods: {
