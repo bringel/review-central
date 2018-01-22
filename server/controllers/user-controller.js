@@ -8,8 +8,9 @@ userController.get('/', (request, response) => {
   if (request.session.userID) {
     console.log(`Found session user: ${request.session.userID}`);
 
-    const user = User.findById(request.session.userID);
-    response.json(user);
+    User.findById(request.session.userID).then(user => {
+      response.json(user);
+    });
   }
   else {
     response.sendStatus(401);

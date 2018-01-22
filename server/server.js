@@ -5,8 +5,8 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 
-import { loginController } from './controllers/login-controller';
-import { userController } from './controllers/user-controller';
+import loginController from './controllers/login-controller';
+import userController from './controllers/user-controller';
 
 dotenv.config();
 const app = express();
