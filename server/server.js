@@ -3,19 +3,33 @@ import path from 'path';
 import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
+import session from 'express-session';
 
 import { loginController } from './controllers/login-controller';
+import { userController } from './controllers/user-controller';
 
 dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
 
+const sessionOptions = {
+  // store: RedisStore,
+  secret: 'millenium falcon', // TODO: use a randomly generated string in environment variable
+  // cookie: {
+  //   maxAge: 7*24*60*60*1000
+  // },
+  rolling: true,
+  saveUninitialized: true
+}
+
 app.use(express.static(path.join(__dirname, '../../dist')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(session(sessionOptions));
 
 app.use('/login', loginController);
+app.use('/api/user', userController);
 
 app.listen(port, function() {
   // eslint-disable-next-line

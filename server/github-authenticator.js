@@ -2,10 +2,9 @@ import { OAuth2 } from 'oauth'
 
 export class GithubAuthenticator {
 
-  constructor(clientID, clientSecret, callbackURL) {
+  constructor(clientID, clientSecret) {
     this.clientID = clientID;
     this.clientSecret = clientSecret;
-    this.callbackURL = callbackURL;
   }
 
   loginUser(code, callback) {
