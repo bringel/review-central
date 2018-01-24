@@ -1,8 +1,8 @@
-import express from 'express';
+import { Router } from 'express';
 
 import { User } from '../db/models';
 
-export const userController = express.Router();
+const userController = Router();
 
 userController.get('/', (request, response) => {
   if (request.session.userID) {
@@ -16,3 +16,5 @@ userController.get('/', (request, response) => {
     response.sendStatus(401);
   }
 });
+
+export default userController;

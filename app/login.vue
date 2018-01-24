@@ -11,7 +11,7 @@
 export default {
   name: 'login',
   data () {
-
+    return {};
   },
   methods: {
   }
@@ -21,7 +21,7 @@ export default {
 
 <style scoped>
   .login-container {
-    height: 100%;
+    margin-top: 50px;
     display: flex;
     justify-content: center;
     align-items: center;
