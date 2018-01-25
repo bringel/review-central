@@ -1,7 +1,8 @@
 <template>
   <div id="app">
     <navigation-bar></navigation-bar>
-    <login></login>
+    <login v-if="!loggedIn"></login>
+    <user-reviews v-else></user-reviews>
   </div>
 </template>
 
@@ -9,27 +10,34 @@
 import axios from 'axios';
 import navigationBar from './navigation-bar.vue';
 import login from './login.vue';
+import userReviews from './user-reviews.vue';
 
 export default {
   name: 'app',
   data () {
-    return {};
+    return {
+      loggedIn: false
+    };
   },
   mounted: function() {
     axios.get('/api/user').then((response) => {
+      if (response.data) {
+        this.loggedIn = true;
+      }
       console.log(response.data);
     });
   },
   components: {
+    login,
     navigationBar,
-    login
+    userReviews
   }
 }
 </script>
 
 <style lang="scss">
   #app {
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
   }
 </style>
