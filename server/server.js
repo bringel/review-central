@@ -5,6 +5,8 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 
+import { sessionStore } from './session-store';
+
 import loginController from './controllers/login-controller';
 import userController from './controllers/user-controller';
 
@@ -13,13 +15,16 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 const sessionOptions = {
+  store: sessionStore,
   // store: RedisStore,
   secret: 'millenium falcon', // TODO: use a randomly generated string in environment variable
-  // cookie: {
-  //   maxAge: 7*24*60*60*1000
-  // },
+  cookie: {
+    // maxAge: 7*24*60*60*1000
+    maxAge: 60*60*1000
+  },
   rolling: true,
-  saveUninitialized: true
+  saveUninitialized: true,
+  resave: true
 }
 
 app.use(express.static(path.join(__dirname, '../../dist')));

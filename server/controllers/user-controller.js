@@ -6,13 +6,10 @@ const userController = Router();
 
 userController.get('/', (request, response) => {
   if (request.session.userID) {
-    console.log(`Found session user: ${request.session.userID}`);
-
     User.findById(request.session.userID).then(user => {
       response.json(user);
     });
-  }
-  else {
+  } else {
     response.sendStatus(401);
   }
 });
