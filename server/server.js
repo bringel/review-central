@@ -20,12 +20,12 @@ const sessionOptions = {
   secret: 'millenium falcon', // TODO: use a randomly generated string in environment variable
   cookie: {
     // maxAge: 7*24*60*60*1000
-    maxAge: 60*60*1000
+    maxAge: 60 * 60 * 1000
   },
   rolling: true,
   saveUninitialized: true,
   resave: true
-}
+};
 
 app.use(express.static(path.join(__dirname, '../../dist')));
 app.use(bodyParser.json());

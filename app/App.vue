@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <navigation-bar></navigation-bar>
+    <navigation-bar :user="user"></navigation-bar>
     <login v-if="!loggedIn"></login>
     <user-reviews v-else></user-reviews>
   </div>
@@ -14,17 +14,18 @@ import userReviews from './user-reviews.vue';
 
 export default {
   name: 'app',
-  data () {
+  data() {
     return {
-      loggedIn: false
+      loggedIn: false,
+      user: {}
     };
   },
   mounted: function() {
-    axios.get('/api/user').then((response) => {
+    axios.get('/api/user').then(response => {
       if (response.data) {
         this.loggedIn = true;
+        this.user = response.data;
       }
-      console.log(response.data);
     });
   },
   components: {
@@ -32,12 +33,12 @@ export default {
     navigationBar,
     userReviews
   }
-}
+};
 </script>
 
 <style lang="scss">
-  #app {
-    width: 100%;
-    height: 100%;
-  }
+#app {
+  width: 100%;
+  height: 100%;
+}
 </style>

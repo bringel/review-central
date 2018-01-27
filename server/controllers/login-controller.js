@@ -9,7 +9,7 @@ const loginController = Router();
 loginController.get('/github', (request, response) => {
   const callbackWithSession = encodeURIComponent(`${process.env.CALLBACK_URL}?sid=${request.session.id}`);
   response.redirect(
-    `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&redirect_uri=${callbackWithSession}`
+    `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&redirect_uri=${callbackWithSession}` // prettier-ignore
   );
 });
 
@@ -22,7 +22,6 @@ loginController.get('/github/callback', (request, response) => {
   const github = new GithubAuthenticator(process.env.GITHUB_CLIENT_ID, process.env.GITHUB_CLIENT_SECRET);
 
   github.loginUser(code, (token, userInfo) => {
-    // TODO: save the user record to the database
     User.findOrCreate({
       where: { githubID: userInfo.id },
       defaults: {
@@ -34,8 +33,10 @@ loginController.get('/github/callback', (request, response) => {
     }).then(([u, created]) => {
       sessionStore.get(sessionID, (error, session) => {
         session.userID = u.id;
-        sessionStore.set(sessionID, session, (error) => {
-          if (error) { console.log(error); } // eslint-disable-line
+        sessionStore.set(sessionID, session, error => {
+          if (error) {
+            console.log(error); // eslint-disable-line
+          }
         });
         response.redirect('back');
       });
