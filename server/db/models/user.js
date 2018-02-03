@@ -5,12 +5,10 @@ module.exports = (sequelize, DataTypes) => {
     githubName: DataTypes.STRING,
     githubID: DataTypes.BIGINT,
     githubEmail: DataTypes.STRING
-  }, {
-    classMethods: {
-      associate: function(models) {
-        // associations can be defined here
-      }
-    }
   });
+
+  User.associate = function(models) {
+    User.belongsToMany(models.PullRequest, { through: 'UserPullRequests' });
+  };
   return User;
 };
