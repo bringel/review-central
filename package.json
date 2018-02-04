@@ -2,15 +2,21 @@
   "name": "github-review-central",
   "description": "A github pull request review dashboard",
   "version": "1.0.0",
+  "engines": {
+    "node": "9.2.1"
+  },
   "author": "Brad Ringel <brad.ringel@gmail.com>",
   "private": true,
   "scripts": {
-    "devServer": "cross-env NODE_ENV=development webpack-dev-server --open --hot",
-    "apiServer": "nodemon --watch server --exec ./node_modules/.bin/babel-node server/server.js",
-    "dev": "npm-run-all -p devServer apiServer",
-    "buildApp": "cross-env NODE_ENV=production webpack --progress --hide-modules",
-    "buildServer": "rimraf server/dist && ./node_modules/.bin/babel server -d server/dist --copy-files ",
-    "start": "npm-run-all buildApp buildServer && cross-env NODE_ENV=production node server/dist/server.js"
+    "devServer": "cross-env NODE_ENV=development npx webpack-dev-server --open --hot",
+    "apiServerDev": "npx nodemon --watch server --exec npx babel-node server/server.js",
+    "dev": "npm-run-all migrations -p devServer apiServerDev",
+    "buildApp": "cross-env NODE_ENV=production npx webpack --progress --hide-modules",
+    "buildServer": "cross-env NODE_ENV=production npx babel server -d server/dist --copy-files ",
+    "startServer": "cross-env NODE_ENV=production node server/dist/server.js",
+    "start": "npm-run-all clean buildApp buildServer migrations startServer",
+    "migrations": "npx sequelize db:migrate",
+    "clean": "npx rimraf dist server/dist"
   },
   "dependencies": {
     "axios": "^0.17.1",
@@ -23,9 +29,12 @@
     "oauth": "^0.9.15",
     "pg": "^6.4.2",
     "rimraf": "^2.6.2",
+    "npm-run-all": "^4.0.2",
     "sequelize": "^4.28.0",
+    "sequelize-cli": "^3.2.0",
     "vue": "^2.3.3",
-    "vue-resource": "^1.3.4"
+    "vue-resource": "^1.3.4",
+    "webpack": "^2.6.1"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
@@ -43,11 +52,9 @@
     "html-webpack-plugin": "^2.30.1",
     "node-sass": "^4.5.0",
     "nodemon": "^1.14.11",
-    "npm-run-all": "^4.0.2",
     "sass-loader": "^5.0.1",
     "vue-loader": "^12.1.0",
     "vue-template-compiler": "^2.3.3",
-    "webpack": "^2.6.1",
     "webpack-dev-server": "^2.4.5"
   }
 }
