@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
 import { sessionStore } from '../session-store';
-import { GithubAuthenticator } from '../github-authenticator';
+import { GithubAuthenticator } from '../github/github-authenticator';
 import { User } from '../db/models';
 
 const loginController = Router();

@@ -9,6 +9,7 @@ import { sessionStore } from './session-store';
 
 import loginController from './controllers/login-controller';
 import userController from './controllers/user-controller';
+import webhooksController from './controllers/webhooks-controller';
 
 dotenv.config();
 const app = express();
@@ -35,6 +36,7 @@ app.use(session(sessionOptions));
 
 app.use('/login', loginController);
 app.use('/api/user', userController);
+app.use('/webhooks', webhooksController);
 
 app.listen(port, function() {
   // eslint-disable-next-line
