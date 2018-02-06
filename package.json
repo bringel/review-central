@@ -13,6 +13,7 @@
     "dev": "npm-run-all migrations -p devServer apiServerDev",
     "buildApp": "cross-env NODE_ENV=production npx webpack --progress --hide-modules",
     "buildServer": "cross-env NODE_ENV=production npx babel server -d server/dist --copy-files ",
+    "build": "npm-run-all buildServer buildApp",
     "startServer": "cross-env NODE_ENV=production node server/dist/server.js",
     "start": "npm-run-all clean buildApp buildServer migrations startServer",
     "migrations": "npx sequelize db:migrate",
