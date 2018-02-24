@@ -2,26 +2,43 @@ import { Repository, PullRequest, User } from '../db/models';
 
 export class PullRequestClient {
   addPullRequest(response) {
-    const pr = response.pull_request;
-    const githubUserID = pr.user.id;
-    User.findOrCreate({
-      where: { githubID: githubUserID },
-      defaults: {
-        githubID: pr.user.id,
-        githubUsename: pr.user.login
-      }
-    }).then(u => {
-      // TODO: add status and jira issue key
-      // TODO: maybe need to find or create because a review request event can sometimes come in before the open event
-      PullRequest.create({
-        githubID: pr.id,
-        number: response.number,
-        title: pr.title,
-        developerID: u.id,
-        pullRequestCreatedDatetime: pr.created_at,
-        pullRequestUpdatedDatetime: pr.updated_at,
-        branchName: pr.head.ref
+    console.log(PullRequest);
+    return Promise.all([
+      Repository.findOrCreate({
+        where: { githubID: response.repository.id },
+        defaults: {
+          githubID: response.repository.id,
+          name: response.repository.name,
+          url: response.repository.html_url
+        }
+      }),
+      User.findOrCreate({
+        where: { githubID: response.pull_request.user.id },
+        defaults: {
+          githubID: response.pull_request.user.id,
+          githubUsername: response.pull_request.user.login
+        }
+      })
+    ])
+      .then(([[repo, repoCreated], [user, userCreated]]) => {
+        const pullRequest = PullRequest.findOrCreate({
+          where: { githubID: response.pull_request.id },
+          defaults: {
+            githubID: response.pull_request.id,
+            number: response.pull_request.number,
+            title: response.pull_request.title,
+            developerID: user.id,
+            pullRequestCreatedDatetime: response.pull_request.created_at,
+            pullRequestUpdatedDatetime: response.pull_request.updated_at,
+            branchName: response.pull_request.head.ref,
+            status: 'open'
+          }
+        });
+
+        return Promise.all([repo, pullRequest]);
+      })
+      .then(([repo, [pullRequest, pullRequestCreated]]) => {
+        return repo.addPullRequest(pullRequest);
       });
-    });
   }
 }

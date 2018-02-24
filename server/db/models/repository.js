@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   Repository.associate = function(models) {
-    Repository.hasMany(models.PullRequest);
+    Repository.hasMany(models.PullRequest, { foreignKey: 'repositoryID' });
   };
   return Repository;
 };
