@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
+import morgan from 'morgan';
 
 import { sessionStore } from './session-store';
 
@@ -31,6 +32,7 @@ const sessionOptions = {
 app.use(express.static(path.join(__dirname, '../../dist')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(morgan('common'));
 app.use(cookieParser());
 app.use(session(sessionOptions));
 
