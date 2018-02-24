@@ -2,7 +2,6 @@ import { Repository, PullRequest, User } from '../db/models';
 
 export class PullRequestClient {
   addPullRequest(response) {
-    console.log(PullRequest);
     return Promise.all([
       Repository.findOrCreate({
         where: { githubID: response.repository.id },
