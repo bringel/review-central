@@ -4,7 +4,7 @@ module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface
       .createTable('UserPullRequests', {
-        UserID: {
+        userID: {
           type: Sequelize.INTEGER,
           references: {
             model: 'Users',
@@ -13,7 +13,7 @@ module.exports = {
           onUpdate: 'cascade',
           onDelete: 'cascade'
         },
-        PullRequestID: {
+        pullRequestID: {
           type: Sequelize.INTEGER,
           references: {
             model: 'PullRequests',
@@ -21,6 +21,9 @@ module.exports = {
           },
           onUpdate: 'cascade',
           onDelete: 'cascade'
+        },
+        status: {
+          type: Sequelize.STRING
         },
         createdAt: {
           type: Sequelize.DATE
@@ -30,7 +33,7 @@ module.exports = {
         }
       })
       .then(() => {
-        return queryInterface.addConstraint('UserPullRequests', ['UserID', 'PullRequestID'], {
+        return queryInterface.addConstraint('UserPullRequests', ['userID', 'pullRequestID'], {
           type: 'primary key',
           name: 'UserPullRequests_pkey'
         });

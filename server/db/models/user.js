@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   User.associate = function(models) {
-    User.belongsToMany(models.PullRequest, { through: 'UserPullRequests' });
+    User.belongsToMany(models.PullRequest, { through: 'UserPullRequests', foreignKey: 'userID' });
   };
   return User;
 };

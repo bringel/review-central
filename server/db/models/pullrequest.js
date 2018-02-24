@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   PullRequest.associate = function(models) {
-    PullRequest.belongsToMany(models.User, { through: 'UserPullRequests' });
+    PullRequest.belongsToMany(models.User, { through: 'UserPullRequests', foreignKey: 'pullRequestID' });
   };
   return PullRequest;
 };
