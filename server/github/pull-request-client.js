@@ -1,7 +1,7 @@
 import { Repository, PullRequest, User } from '../db/models';
 
 export class PullRequestClient {
-  addPullRequest(response) {
+  static addPullRequest(response) {
     return Promise.all([
       Repository.findOrCreate({
         where: { githubID: response.repository.id },
@@ -10,16 +10,16 @@ export class PullRequestClient {
           name: response.repository.name,
           url: response.repository.html_url
         }
-      }),
+      }).then(([repo]) => repo),
       User.findOrCreate({
         where: { githubID: response.pull_request.user.id },
         defaults: {
           githubID: response.pull_request.user.id,
           githubUsername: response.pull_request.user.login
         }
-      })
+      }).then(([user]) => user)
     ])
-      .then(([[repo, repoCreated], [user, userCreated]]) => {
+      .then(([repo, user]) => {
         const pullRequest = PullRequest.findOrCreate({
           where: { githubID: response.pull_request.id },
           defaults: {
@@ -29,15 +29,18 @@ export class PullRequestClient {
             developerID: user.id,
             pullRequestCreatedDatetime: response.pull_request.created_at,
             pullRequestUpdatedDatetime: response.pull_request.updated_at,
-            branchName: response.pull_request.head.ref,
-            status: 'open'
+            branchName: response.pull_request.head.ref
           }
-        });
+        }).then(([pullRequest]) => pullRequest);
 
         return Promise.all([repo, pullRequest]);
       })
-      .then(([repo, [pullRequest, pullRequestCreated]]) => {
+      .then(([repo, pullRequest]) => {
         return repo.addPullRequest(pullRequest);
       });
+  }
+
+  static closePullRequest(response) {
+    return PullRequest.destroy({ where: { githubID: response.pull_request.id } });
   }
 }

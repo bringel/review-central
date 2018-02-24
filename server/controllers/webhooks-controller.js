@@ -9,15 +9,17 @@ webhooksController.post('/', (request, response) => {
   const body = request.body;
   console.log(webhookType);
   switch (webhookType) {
-    case 'pull_request': {
-      const prClient = new PullRequestClient();
+    case 'pull_request':
       if (body.action === 'opened') {
-        prClient.addPullRequest(body).then(() => {
+        PullRequestClient.addPullRequest(body).then(() => {
           response.sendStatus(201);
+        });
+      } else if (body.action === 'closed') {
+        PullRequestClient.closePullRequest(body).then(() => {
+          response.sendStatus(200);
         });
       }
       break;
-    }
     case 'pull_request_review':
       break;
     case 'pull_request_review_comment':
