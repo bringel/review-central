@@ -1,4 +1,4 @@
-import { Repository, PullRequest, User } from '../db/models';
+import { Repository, PullRequest, User, UserPullRequest } from '../db/models';
 
 export class PullRequestClient {
   static addPullRequest(response) {
@@ -42,5 +42,41 @@ export class PullRequestClient {
 
   static closePullRequest(response) {
     return PullRequest.destroy({ where: { githubID: response.pull_request.id } });
+  }
+
+  static markPullRequestAsUpdated(response) {
+    return PullRequest.findAll({ where: { githubID: response.pull_request.id } })
+      .then(pullRequests => pullRequests.map(r => r.id))
+      .then(pullRequestIDs => {
+        return UserPullRequest.update({ status: 'active' }, { where: { pullRequestID: pullRequestIDs } });
+      });
+  }
+
+  static assignPullRequest(response) {
+    return Promise.all(
+      response.pull_request.assignees.map(u =>
+        User.findOrCreate({
+          where: { githubID: u.id },
+          defaults: {
+            githubID: u.id,
+            githubUsername: u.login
+          }
+        }).then(([u]) => u)
+      )
+    ).then(users => {
+      return PullRequest.findOrCreate({
+        where: { githubID: response.pull_request.id },
+        defaults: {
+          githubID: response.pull_request.id,
+          number: response.pull_request.number,
+          title: response.pull_request.title,
+          pullRequestCreatedDatetime: response.pull_request.created_at,
+          pullRequestUpdatedDatetime: response.pull_request.updated_at,
+          branchName: response.pull_request.head.ref
+        }
+      }).then(([pr]) => {
+        return pr.addUsers(users, { through: { status: 'active' } });
+      });
+    });
   }
 }

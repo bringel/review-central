@@ -7,7 +7,7 @@ const webhooksController = Router();
 webhooksController.post('/', (request, response) => {
   const webhookType = request.get('X-GitHub-Event');
   const body = request.body;
-  console.log(webhookType);
+  console.log(`Processing ${webhookType} type webhook`); // eslint-disable-line
   switch (webhookType) {
     case 'pull_request':
       if (body.action === 'opened') {
@@ -16,6 +16,15 @@ webhooksController.post('/', (request, response) => {
         });
       } else if (body.action === 'closed') {
         PullRequestClient.closePullRequest(body).then(() => {
+          response.sendStatus(200);
+        });
+      } else if (body.action === 'reopened') {
+        PullRequestClient.addPullRequest(body).then(() => {
+          response.sendStatus(201);
+        });
+      } else if (body.action === 'synchronize') {
+      } else if (body.action === 'assigned') {
+        PullRequestClient.assignPullRequest(body).then(() => {
           response.sendStatus(200);
         });
       }

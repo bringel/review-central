@@ -40,9 +40,7 @@ module.exports = {
         references: {
           model: 'Repositories',
           key: 'id'
-        },
-        onDelete: 'cascade',
-        onUpdate: 'cascade'
+        }
       },
       createdAt: {
         allowNull: false,
