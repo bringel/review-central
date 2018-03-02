@@ -1,4 +1,7 @@
-import { Repository, PullRequest, User, UserPullRequest } from '../db/models';
+import { PullRequest, UserPullRequest } from '../db/models';
+import { getUser } from './user-functions';
+import { getRepository } from './repository-functions';
+import { getPullRequest } from './pull-request-functions';
 
 export class PullRequestClient {
   static addPullRequest(response) {
@@ -47,43 +50,4 @@ export class PullRequestClient {
       });
     });
   }
-}
-
-function getRepository(repo) {
-  return Repository.findOrCreate({
-    where: { githubID: repo.id },
-    defaults: {
-      githubID: repo.id,
-      name: repo.name,
-      url: repo.html_url
-    }
-  }).then(([r]) => r);
-}
-
-function getUser(user) {
-  return User.findOrCreate({
-    where: { githubID: user.id },
-    defaults: {
-      githubID: user.id,
-      githubUsername: user.login
-    }
-  }).then(([u]) => u);
-}
-
-function getPullRequest(pr, defaultOverrides = {}) {
-  return PullRequest.findOrCreate({
-    where: { githubID: pr.id },
-    defaults: Object.assign(
-      {},
-      {
-        githubID: pr.id,
-        number: pr.number,
-        title: pr.title,
-        pullRequestCreatedDatetime: pr.created_at,
-        pullRequestUpdatedDatetime: pr.updated_at,
-        branchName: pr.head.ref
-      },
-      defaultOverrides
-    )
-  }).then(([r]) => r);
 }
