@@ -23,8 +23,23 @@ webhooksController.post('/', (request, response) => {
           response.sendStatus(201);
         });
       } else if (body.action === 'synchronize') {
+        PullRequestClient.markPullRequestAsUpdated(body).then(() => {
+          response.sendStatus(200);
+        });
       } else if (body.action === 'assigned') {
         PullRequestClient.assignPullRequest(body).then(() => {
+          response.sendStatus(200);
+        });
+      } else if (body.action === 'unassigned') {
+        PullRequestClient.removeUserPullRequests(body).then(() => {
+          response.sendStatus(200);
+        });
+      } else if (body.action === 'review_requested') {
+        PullRequestClient.addReviewRequest(body).then(() => {
+          response.sendStatus(200);
+        });
+      } else if (body.action === 'review_request_removed') {
+        PullRequestClient.removeUserPullRequests(body).then(() => {
           response.sendStatus(200);
         });
       }

@@ -2,36 +2,9 @@ import { Repository, PullRequest, User, UserPullRequest } from '../db/models';
 
 export class PullRequestClient {
   static addPullRequest(response) {
-    return Promise.all([
-      Repository.findOrCreate({
-        where: { githubID: response.repository.id },
-        defaults: {
-          githubID: response.repository.id,
-          name: response.repository.name,
-          url: response.repository.html_url
-        }
-      }).then(([repo]) => repo),
-      User.findOrCreate({
-        where: { githubID: response.pull_request.user.id },
-        defaults: {
-          githubID: response.pull_request.user.id,
-          githubUsername: response.pull_request.user.login
-        }
-      }).then(([user]) => user)
-    ])
+    return Promise.all([getRepository(response.repository), getUser(response.pull_request.user)])
       .then(([repo, user]) => {
-        const pullRequest = PullRequest.findOrCreate({
-          where: { githubID: response.pull_request.id },
-          defaults: {
-            githubID: response.pull_request.id,
-            number: response.pull_request.number,
-            title: response.pull_request.title,
-            developerID: user.id,
-            pullRequestCreatedDatetime: response.pull_request.created_at,
-            pullRequestUpdatedDatetime: response.pull_request.updated_at,
-            branchName: response.pull_request.head.ref
-          }
-        }).then(([pullRequest]) => pullRequest);
+        const pullRequest = getPullRequest(response.pull_request, { developerID: user.id });
 
         return Promise.all([repo, pullRequest]);
       })
@@ -53,30 +26,64 @@ export class PullRequestClient {
   }
 
   static assignPullRequest(response) {
-    return Promise.all(
-      response.pull_request.assignees.map(u =>
-        User.findOrCreate({
-          where: { githubID: u.id },
-          defaults: {
-            githubID: u.id,
-            githubUsername: u.login
-          }
-        }).then(([u]) => u)
-      )
-    ).then(users => {
-      return PullRequest.findOrCreate({
-        where: { githubID: response.pull_request.id },
-        defaults: {
-          githubID: response.pull_request.id,
-          number: response.pull_request.number,
-          title: response.pull_request.title,
-          pullRequestCreatedDatetime: response.pull_request.created_at,
-          pullRequestUpdatedDatetime: response.pull_request.updated_at,
-          branchName: response.pull_request.head.ref
-        }
-      }).then(([pr]) => {
+    return Promise.all(response.pull_request.assignees.map(u => getUser(u))).then(users => {
+      getPullRequest(response.pull_request).then(pr => {
         return pr.addUsers(users, { through: { status: 'active' } });
       });
     });
   }
+
+  static removeUserPullRequests(response) {
+    return PullRequest.findAll({ where: { githubID: response.pull_request.id } }).then(prs => {
+      const pullRequestIDs = prs.map(pr => pr.id);
+      return UserPullRequest.destroy({ where: { pullRequestID: pullRequestIDs } });
+    });
+  }
+
+  static addReviewRequest(response) {
+    return Promise.all(response.pull_request.requested_reviewers.map(u => getUser(u))).then(users => {
+      getPullRequest(response.pull_request).then(pr => {
+        return pr.addUsers(users, { through: { status: 'active ' } });
+      });
+    });
+  }
+}
+
+function getRepository(repo) {
+  return Repository.findOrCreate({
+    where: { githubID: repo.id },
+    defaults: {
+      githubID: repo.id,
+      name: repo.name,
+      url: repo.html_url
+    }
+  }).then(([r]) => r);
+}
+
+function getUser(user) {
+  return User.findOrCreate({
+    where: { githubID: user.id },
+    defaults: {
+      githubID: user.id,
+      githubUsername: user.login
+    }
+  }).then(([u]) => u);
+}
+
+function getPullRequest(pr, defaultOverrides = {}) {
+  return PullRequest.findOrCreate({
+    where: { githubID: pr.id },
+    defaults: Object.assign(
+      {},
+      {
+        githubID: pr.id,
+        number: pr.number,
+        title: pr.title,
+        pullRequestCreatedDatetime: pr.created_at,
+        pullRequestUpdatedDatetime: pr.updated_at,
+        branchName: pr.head.ref
+      },
+      defaultOverrides
+    )
+  }).then(([r]) => r);
 }

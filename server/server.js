@@ -32,7 +32,7 @@ const sessionOptions = {
 app.use(express.static(path.join(__dirname, '../../dist')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(morgan('common'));
+app.use(morgan('dev'));
 app.use(cookieParser());
 app.use(session(sessionOptions));
 
