@@ -1,6 +1,12 @@
 import { Router } from 'express';
-
-import { PullRequestClient } from '../github/pull-request-client';
+import {
+  addPullRequest,
+  closePullRequest,
+  markPullRequestAsUpdated,
+  assignPullRequest,
+  removeUserPullRequests,
+  addReviewRequest
+} from '../github/pull-request-event-functions';
 
 const webhooksController = Router();
 
@@ -11,35 +17,35 @@ webhooksController.post('/', (request, response) => {
   switch (webhookType) {
     case 'pull_request':
       if (body.action === 'opened') {
-        PullRequestClient.addPullRequest(body).then(() => {
+        addPullRequest(body).then(() => {
           response.sendStatus(201);
         });
       } else if (body.action === 'closed') {
-        PullRequestClient.closePullRequest(body).then(() => {
+        closePullRequest(body).then(() => {
           response.sendStatus(200);
         });
       } else if (body.action === 'reopened') {
-        PullRequestClient.addPullRequest(body).then(() => {
+        addPullRequest(body).then(() => {
           response.sendStatus(201);
         });
       } else if (body.action === 'synchronize') {
-        PullRequestClient.markPullRequestAsUpdated(body).then(() => {
+        markPullRequestAsUpdated(body).then(() => {
           response.sendStatus(200);
         });
       } else if (body.action === 'assigned') {
-        PullRequestClient.assignPullRequest(body).then(() => {
+        assignPullRequest(body).then(() => {
           response.sendStatus(200);
         });
       } else if (body.action === 'unassigned') {
-        PullRequestClient.removeUserPullRequests(body).then(() => {
+        removeUserPullRequests(body).then(() => {
           response.sendStatus(200);
         });
       } else if (body.action === 'review_requested') {
-        PullRequestClient.addReviewRequest(body).then(() => {
+        addReviewRequest(body).then(() => {
           response.sendStatus(200);
         });
       } else if (body.action === 'review_request_removed') {
-        PullRequestClient.removeUserPullRequests(body).then(() => {
+        removeUserPullRequests(body).then(() => {
           response.sendStatus(200);
         });
       }

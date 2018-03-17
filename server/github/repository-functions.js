@@ -1,4 +1,4 @@
-import { Repository } from './db/models';
+import { Repository } from '../db/models';
 
 export function getRepository(repo, defaultsOverrides = {}) {
   return Repository.findOrCreate({
